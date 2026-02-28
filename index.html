@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cultural Poster Designer</title>
+    <style>
+        /* --- CSS: MODERN DESIGN & ANIMATIONS --- */
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-purple: #9d50bb;
+            --dark-bg: #050505;
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Moving Background Animation */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+            z-index: -1;
+        }
+
+        /* Text Animation Creation */
+        .hero-text {
+            margin-top: 50px;
+            text-align: center;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .typing-effect {
+            font-size: 1.2rem;
+            color: #888;
+            border-right: 2px solid var(--neon-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            animation: typing 3.5s steps(40, end), blink .75s step-end infinite;
+        }
+
+        /* Glassmorphism Control Panel */
+        .container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin: 40px 0;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(157, 80, 187, 0.5);
+        }
+
+        /* Result Display Area */
+        #posterResult {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        #generatedImage {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-blue) }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-text">
+        <h1>Cultra-AI</h1>
+        <div class="typing-effect">Designing the future of Cultural Festivals...</div>
+    </div>
+
+    <div class="container">
+        <label>Describe your Event</label>
+        <input type="text" id="eventPrompt" placeholder="e.g. Traditional Indian Dance Festival with neon lights, 4k">
+        
+        <label>Art Style</label>
+        <select id="styleSelect">
+            <option value="cinematic, highly detailed, professional poster">Cinematic Poster</option>
+            <option value="traditional folk art style, vibrant colors">Traditional Folk</option>
+            <option value="futuristic synthwave cultural vibes">Cyber-Culture</option>
+            <option value="abstract oil painting, expressive">Artistic Painting</option>
+        </select>
+
+        <button onclick="generatePoster()" id="genBtn">Create AI Poster</button>
+
+        <div id="posterResult">
+            <p>Your Custom Cultural Design:</p>
+            <img id="generatedImage" src="" alt="AI Generated Poster">
+            <br>
+            <button style="margin-top:20px; background: #333;" onclick="downloadImage()">Download Poster</button>
+        </div>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT: THE AI "BACKEND" LOGIC ---
+        async function generatePoster() {
+            const prompt = document.getElementById('eventPrompt').value;
+            const style = document.getElementById('styleSelect').value;
+            const btn = document.getElementById('genBtn');
+            const resultDiv = document.getElementById('posterResult');
+            const img = document.getElementById('generatedImage');
+
+            if (!prompt) {
+                alert("Please describe your cultural event first!");
+                return;
+            }
+
+            // Start Loading State
+            btn.innerText = "Generating with AI...";
+            btn.disabled = true;
+
+            // Construction of the AI Query (Pollinations.ai API)
+            const finalPrompt = encodeURIComponent(`Cultural festival poster: ${prompt}, ${style}`);
+            const imageUrl = `https://pollinations.ai/p/${finalPrompt}?width=1080&height=1350&seed=${Math.floor(Math.random() * 1000)}`;
+
+            // Apply image to UI
+            img.onload = function() {
+                btn.innerText = "Create AI Poster";
+                btn.disabled = false;
+                resultDiv.style.display = "block";
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            };
+            
+            img.src = imageUrl;
+        }
+
+        function downloadImage() {
+            const img = document.getElementById('generatedImage');
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = 'Cultural_Poster.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
