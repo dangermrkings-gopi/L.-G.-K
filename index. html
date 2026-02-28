@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mobile App</title>
+    <style>
+        /* CSS: This makes it look like a real App */
+        body { font-family: sans-serif; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 80%; max-width: 400px; }
+        button { background: #007bff; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:active { transform: scale(0.98); background: #0056b3; }
+        input { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; box-sizing: border-box; }
+        #status { margin-top: 15px; font-size: 14px; color: #00ff00; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Mobile Web App</h2>
+        <p>Type something to save to your "Database"</p>
+        
+        <input type="text" id="userInput" placeholder="Enter name or note...">
+        <button onclick="saveData()">Save to Backend</button>
+        
+        <div id="status">Ready...</div>
+    </div>
+
+    <script>
+        // JAVASCRIPT: This is your "Logic" (Fronthand)
+        function saveData() {
+            const input = document.getElementById('userInput').value;
+            const status = document.getElementById('status');
+            
+            if(input === "") {
+                status.innerText = "Please enter something!";
+                status.style.color = "red";
+                return;
+            }
+
+            status.innerText = "Connecting to Backend...";
+            status.style.color = "yellow";
+
+            // In a real app, you would send this to your Supabase/Database URL
+            // For now, we simulate a backend response:
+            setTimeout(() => {
+                status.innerText = "Successfully saved: " + input;
+                status.style.color = "#00ff00";
+                document.getElementById('userInput').value = "";
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
